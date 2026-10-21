@@ -1,0 +1,37 @@
+name: api-test
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  schedule:
+    - cron: "0 1 * * *"   # 每天 09:00 (UTC+8) 定时回归
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run API tests
+        run: |
+          pytest tests/test_01_login.py tests/test_02_product.py \
+                 tests/test_03_order.py tests/test_04_cart_ddt.py \
+                 --html=reports/report.html --self-contained-html
+
+      # 已知缺陷会被判失败，这里保留报告但不让流水线红掉；
+      # 缺陷修好、用例全部通过后，把 continue-on-error 删掉
+      - name: Upload report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pytest-report
+          path: reports/report.html

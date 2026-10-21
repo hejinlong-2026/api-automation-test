@@ -1,0 +1,59 @@
+# -*- coding: utf-8 -*-
+# 购物车加购 —— 数据驱动用例集
+# 设计依据：docs/测试用例清单.md 中 CART 系列
+cases:
+  - id: CART-01
+    desc: 正常加购1件
+    product_id: P001
+    quantity: 1
+    expect_status: 200
+    expect_msg: ""
+
+  - id: CART-02
+    desc: 加购数量等于库存上限
+    product_id: P002
+    quantity: 5
+    expect_status: 200
+    expect_msg: ""
+
+  - id: CART-03
+    desc: 加购数量超库存
+    product_id: P002
+    quantity: 6
+    expect_status: 400
+    expect_msg: "库存"
+
+  - id: CART-04
+    desc: 加购库存为0的商品
+    product_id: P003
+    quantity: 1
+    expect_status: 400
+    expect_msg: "库存"
+
+  - id: CART-05
+    desc: 加购数量为0（边界值）
+    product_id: P001
+    quantity: 0
+    expect_status: 400
+    expect_msg: "数量"
+
+  - id: CART-07
+    desc: 加购数量为-1（边界值）
+    product_id: P001
+    quantity: -1
+    expect_status: 400
+    expect_msg: "数量"
+
+  - id: CART-08
+    desc: 加购数量为字符串类型
+    product_id: P001
+    quantity: "abc"
+    expect_status: 400
+    expect_msg: "数量"
+
+  - id: CART-09
+    desc: 商品ID不存在
+    product_id: NOT_EXIST
+    quantity: 1
+    expect_status: 404
+    expect_msg: "不存在"
