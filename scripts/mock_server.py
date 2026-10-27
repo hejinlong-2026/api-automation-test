@@ -98,8 +98,8 @@ class Handler(BaseHTTPRequestHandler):
             pid = path.split("/")[-1]
             p = PRODUCTS.get(pid)
             if not p:
-                # 缺陷 D-001：查不到应 404，这里返回 200 + data:null
-                return err(self, 404,"商品不存在")
+                # D-001 已修复：资源不存在统一返回 404
+                return err(self, 404, "商品不存在")
             return ok(self, p)
 
         if not self._phone():
@@ -192,7 +192,7 @@ class Handler(BaseHTTPRequestHandler):
             if not o or o["owner"] != phone:
                 return err(self, 404, "订单不存在")
             if o["status"] == "PAID":
-                # 缺陷 D-005：重复支付应 409，这里静默 200
+                # D-003 幂等校验：已支付订单再次支付返回 409，避免重复扣款
                 return err(self, 409, "订单已支付，请勿重复支付")
             o["status"] = "PAID"
             o["paid"] = True

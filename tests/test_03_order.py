@@ -38,7 +38,7 @@ class TestOrderFlow:
         assert query.json()["data"]["status"] == "PAID", "支付后查询状态未更新，状态机不一致"
 
     def test_pay_twice_should_conflict(self, user_a, order_flow):
-        """ORDER-04 幂等：重复支付应返回 409 或标识幂等（缺陷 D-005 验证点）"""
+        """ORDER-04 幂等：重复支付应返回 409，不可静默成功"""
         order_id, _ = order_flow
         user_a.pay(order_id)
         second = user_a.pay(order_id)

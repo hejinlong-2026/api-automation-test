@@ -43,7 +43,7 @@ class TestProduct:
         assert isinstance(data["price"], float), "价格应为浮点，避免前端精度展示问题"
 
     def test_detail_not_found_returns_404(self, user_a):
-        """PROD-02 反向：不存在的商品应返回 404（缺陷 D-001 验证点）"""
+        """PROD-02 反向：不存在的商品应返回 404（D-001 回归点）"""
         resp = user_a.get_product("NOT_EXIST_999")
         assert resp.status_code == 404, (
             f"期望 404 实际 {resp.status_code}，响应体={resp.text[:200]}；"
@@ -75,6 +75,6 @@ class TestProduct:
             )
 
     def test_list_performance_sla(self, user_a):
-        """PROD-09 性能：商品列表响应需 < 500ms（缺陷 D-003 验证点）"""
+        """PROD-09 性能：商品列表响应需 < 500ms"""
         user_a.list_products()
         assert_elapsed(user_a.c, CONF.SLA_LIST_MS, "GET /api/products")
